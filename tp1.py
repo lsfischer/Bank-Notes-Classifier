@@ -37,15 +37,18 @@ class Assignment:
         c = 1 # we start with c = 1 and we double it every iteration
         c_cross_error_list = []  #To be converted into a matrix to be plotted with the c value, the training error and the validation error
         for iteration in range(1, 21):
-            total_training_error = total_validation_error = 0
+            total_train_error = total_val_error = 0
             for train_idx, valid_idx in kfold.split(y_train, y_train):
                 train_error, valid_error = calculate_error(4, x_train, y_train, train_idx, valid_idx, c) #Calculate the cross-validation error with the current c
-                total_training_error += train_error
-                total_validation_error += valid_error
+                total_train_error += train_error
+                total_val_error += valid_error
                 
-            c_cross_error_list.append((c, total_training_error, total_validation_error))
+            c_cross_error_list.append((c, total_train_error, total_val_error))
             c = c * 2
-        
+        # Convert error list into matrix form
+        c_cross_error_matrix = np.array(c_cross_error_list)
+        # Plot training and validation errors
+        plot_crossVal_err(c_cross_error_matrix)
         
     
     def knn(self):
