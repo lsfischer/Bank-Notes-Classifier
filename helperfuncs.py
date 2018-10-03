@@ -60,13 +60,14 @@ def plot_crossVal_err(err_array, if_log_c_axis = True, filename = 'cross_val_err
     if (if_log_c_axis):
         plt.plot(np.log10(err_array[:,0]),err_array[:,1],"-r", label="training")    
         plt.plot(np.log10(err_array[:,0]),err_array[:,2],"-b", label="validation")
-        plt.xlabel('log_10(C)')
+        plt.xlabel('$\log_{10}(C)$')
     else:
         plt.plot(err_array[:,0],err_array[:,1],"-r", label="training")    
         plt.plot(err_array[:,0],err_array[:,2],"-b", label="validation")
         plt.xlabel('C')
     plt.ylabel('error')
     plt.legend()
-    plt.show()
     plt.savefig(filename, dpi=300)
+    plt.show()
+    
     
