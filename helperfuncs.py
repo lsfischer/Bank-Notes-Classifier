@@ -7,6 +7,7 @@ Created on Wed Oct  3 09:47:38 2018
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
 
 def standardize_data(data, column):
     """
@@ -29,7 +30,6 @@ def normalize_data(data, column):
     
 
 
-
 def read_data_file(filename, delim):
     """ 
         Reads the data file and gets data separated by delimiter delim 
@@ -39,3 +39,12 @@ def read_data_file(filename, delim):
     # Load the data from file
     data = np.loadtxt(filename,delimiter=delim)
     return data
+
+
+def calculate_error(feats, X,Y, train_ix,valid_ix,C=1e12):
+    """return error for train and validation sets"""
+    reg = LogisticRegression(C = C, tol = 1e-10)
+    reg.fit(X[train_ix, :feats], Y[train_ix])
+    prob = reg.predict_proba(X[:,:feats])[:, 1]    
+    squares = (prob-Y) ** 2
+    return np.mean(squares[train_ix]), np.mean(squares[valid_ix])
