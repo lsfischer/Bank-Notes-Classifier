@@ -8,3 +8,6 @@ Created on Mon Oct  1 15:51:38 2018
 """
 
 
+import matplotlib.pyplot as plt
+# Load the data from file
+#data = np.loadtxt('TP1-data.csv',delimiter=',')
