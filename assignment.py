@@ -12,7 +12,15 @@ from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.linear_model import LogisticRegression
 
 class Assignment:
+
     def __init__(self, filename, delim):
+        """
+            Initializer for the Assignment class.
+            Obtains the data from a given file and shuffles that data.
+            Input: 
+                filename - name of the file to obtain the data from
+                delim - delimiter of the values in that file
+        """
         self.filename = filename
         self.data = read_data_file(filename, delim)
         self.data = shuffle(self.data)
@@ -29,6 +37,10 @@ class Assignment:
         
 
     def logistic_reg(self, folds = 5):
+        """
+            Implement the training of the logistic regression algorithm (to obtain the best C value) 
+            and estimation of the test error after training the algorithm with the full training set
+        """
         self.process_data()
         x_train, x_test, y_train, y_test = train_test_split(self.data, self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
         kfold = StratifiedKFold(n_splits = folds)

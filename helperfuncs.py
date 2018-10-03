@@ -10,6 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 
+
+
 def standardize_data(data, column):
     """
         Standerdize the data from the given column forward
@@ -18,6 +20,9 @@ def standardize_data(data, column):
     std = np.std(data[:, column:])  #Calculate the standard deviation for all the columns from the given column forward
     data[:, column:] = (data[:, column:] - mean)/std #standerdize the data
     return data
+
+
+
 
 
 def normalize_data(data, column):
@@ -31,6 +36,8 @@ def normalize_data(data, column):
     
 
 
+
+
 def read_data_file(filename, delim):
     """ 
         Reads the data file and gets data separated by delimiter delim 
@@ -38,6 +45,10 @@ def read_data_file(filename, delim):
     # Load the data from file
     data = np.loadtxt(filename,delimiter=delim)
     return data
+
+
+
+
 
 
 def calculate_error(feats, X,Y, train_ix,valid_ix,C=1e12):
@@ -49,6 +60,10 @@ def calculate_error(feats, X,Y, train_ix,valid_ix,C=1e12):
     return np.mean(squares[train_ix]), np.mean(squares[valid_ix])
 
 
+
+
+
+
 def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, C=1e12):
     """
         return the test error, training with the full training set
@@ -58,6 +73,11 @@ def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, C=1e12):
     prob = reg.predict_proba(X_test[:, :feats])[:,1]
     squares = (prob - Y_test)**2
     return np.mean(squares)
+
+
+
+
+
 
 def plot_crossVal_err(err_array, if_log_c_axis = True, filename = 'cross_val_err_vs_c.png'):
     """ 
