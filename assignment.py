@@ -3,7 +3,8 @@
 """
 Created on Wed Oct  3 11:23:29 2018
 
-@author: lucas
+@author: Lucas Fischer
+@author: Joana Martins
 """
 from helperfuncs import *
 from sklearn.utils import shuffle
