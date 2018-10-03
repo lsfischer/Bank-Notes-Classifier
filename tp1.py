@@ -6,7 +6,3 @@ Created on Mon Oct  1 15:51:38 2018
 @author: Lucas Fischer
 @author: Joana Martins
 """
-
-
-# Load the data from file
-#data = np.loadtxt('TP1-data.csv',delimiter=',')
