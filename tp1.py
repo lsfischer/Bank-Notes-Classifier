@@ -38,7 +38,7 @@ class Assignment:
         c_cross_error_list = []  #To be converted into a matrix to be plotted with the c value, the training error and the validation error
         for iteration in range(1, 21):
             total_training_error = total_validation_error = 0
-            for train_idx, valid_idx in kfold.split(y_test, y_train):
+            for train_idx, valid_idx in kfold.split(y_train, y_train):
                 train_error, valid_error = calculate_error(4, x_train, y_train, train_idx, valid_idx, c) #Calculate the cross-validation error with the current c
                 total_training_error += train_error
                 total_validation_error += valid_error
