@@ -8,7 +8,7 @@ Created on Wed Oct  3 09:47:38 2018
 import numpy as np
 import matplotlib.pyplot as plt
 
-def standerdize_data(data, column):
+def standardize_data(data, column):
     """
         Standerdize the data from the given column forward
     """

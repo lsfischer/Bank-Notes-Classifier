@@ -15,7 +15,15 @@ class Assignment:
         self.filename = filename
         self.data = read_data_file(filename, delim)
         self.data = shuffle(self.data)
+
+
+    def process_data(self, proc_type):
+        if (proc_type == "standardize"):
+            self.data = standardize_data(self.data[:,:-1], 0)
+        else:
+            self.data = normalize_data(self.data[:,:-1], 0)
         
+
     def logist_reg(self):
         pass
     
