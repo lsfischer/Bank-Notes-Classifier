@@ -8,3 +8,4 @@ Created on Mon Oct  1 15:51:38 2018
 """
 
 
+import numpy as np 
