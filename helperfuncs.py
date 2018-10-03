@@ -48,6 +48,16 @@ def calculate_error(feats, X,Y, train_ix,valid_ix,C=1e12):
     return np.mean(squares[train_ix]), np.mean(squares[valid_ix])
 
 
+def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, C=1e12):
+    """
+        return the test error, training with the full training set
+    """
+    reg = LogisticRegression(C = C, tol=1e-10)
+    reg.fit(X_train[:, :feats], Y_train[:])
+    prob = reg.predict_proba(X_test[:, :feats])[:,1]
+    squares = (prob - Y_test)**2
+    return np.mean(squares)
+
 def plot_crossVal_err(err_array, if_log_c_axis = True, filename = 'cross_val_err_vs_c.png'):
     """ 
         Plots training and cross-validation errors vs C parameter

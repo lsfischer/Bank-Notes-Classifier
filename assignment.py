@@ -49,6 +49,15 @@ class Assignment:
         
         plot_crossVal_err(c_cross_error_matrix) # Plot training and validation errors
         
+        #find the best C value
+        index_line_of_best_c = np.argmin(c_cross_error_matrix[:, 2])
+        best_c = c_cross_error_matrix[index_line_of_best_c, 0]
+        
+        #Obtain the test error for the best c value
+        test_error = calculate_test_error(4, x_train, y_train, x_test, y_test, best_c)
+        
+        return best_c, test_error #return the best c value and the test error
+        
     
     def knn(self):
         pass
