@@ -39,7 +39,7 @@ def read_data_file(filename, delim):
     return data
 
 
-def plot_crossVal_err(err_array, if_log_c_axis):
+def plot_crossVal_err(err_array, if_log_c_axis = True):
     """ 
         Plots training and cross-validation errors vs C parameter
         if if_log_c_axis = true, C axis is displayed in log scale
