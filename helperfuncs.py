@@ -18,7 +18,9 @@ def standerdize_data(data, column):
     return data
 
 def read_data_file(filename, delim):
-    """ Reads the data file and gets data separated by delimiter delim """
+    """ 
+        Reads the data file and gets data separated by delimiter delim 
+    """
     """ input: filename to read (filename), delimeter (delim) """
     """ ouput: data """
     # Load the data from file

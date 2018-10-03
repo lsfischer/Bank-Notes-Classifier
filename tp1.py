@@ -6,3 +6,5 @@ Created on Mon Oct  1 15:51:38 2018
 @author: Lucas Fischer
 @author: Joana Martins
 """
+
+from helperfuncs import *
