@@ -9,7 +9,7 @@ Created on Wed Oct  3 09:47:38 2018
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-
+from sklearn.neighbors import KNeighborsClassifier
 
 
 def standardize_data(data, column):
@@ -23,8 +23,6 @@ def standardize_data(data, column):
 
 
 
-
-
 def normalize_data(data, column):
     """
         Normalize the data from the given column forward
@@ -33,8 +31,6 @@ def normalize_data(data, column):
     max_data = np.max(data[:, column:]) #calculate the maximum for all the columns from the given column forward
     data[:, column:] = (data[:, column:] - min_data) / (max_data - min_data)
     return data
-    
-
 
 
 
@@ -48,25 +44,19 @@ def read_data_file(filename, delim):
 
 
 
-
-
-
-def calculate_error(feats, X,Y, train_ix,valid_ix,C=1e12):
-    """return the cross validation error"""
+def calculate_error_logistic(feats, X, Y, train_ix, valid_ix, C=1e12):
+    """return the cross validation error using Logistic regression"""
     reg = LogisticRegression(C = C, tol = 1e-10)
     reg.fit(X[train_ix, :feats], Y[train_ix])
-    prob = reg.predict_proba(X[:,:feats])[:, 1]    
+    prob = reg.predict_proba(X[:, :feats])[:, 1]    
     squares = (prob-Y) ** 2
     return np.mean(squares[train_ix]), np.mean(squares[valid_ix])
 
 
 
-
-
-
-def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, C=1e12):
+def calculate_test_error_logistic(feats, X_train, Y_train, X_test, Y_test, C=1e12):
     """
-        return the test error, training with the full training set
+        return the test error, training with the full training set, using Logistic regression
     """
     reg = LogisticRegression(C = C, tol=1e-10)
     reg.fit(X_train[:, :feats], Y_train[:])
@@ -75,8 +65,21 @@ def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, C=1e12):
     return np.mean(squares)
 
 
+def calculate_error_knn(feats, X, Y, train_ix, valid_ix, k):
+    """Return the cross validation error using KNN"""
+    knn = KNeighborsClassifier(n_neighbors = k)
+    knn.fit(X[train_ix, :feats], Y[train_ix])
+    prob = knn.predict_proba(X[:, :feats])[:, 1]
+    squares = (prob - Y) ** 2
+    return np.mean(squares[train_ix]), np.mean(squares[valid_ix])
 
-
+def plot_crossVal_err_knn(err_array):   #Put this function inside plot_crossVal_err to have just one
+    plt.figure()
+    plt.plot(err_array[:,0], err_array[:,1], "-r", label="training")
+    plt.plot(err_array[:,0], err_array[:,2], "-b", label="validation")
+    plt.ylabel('error')
+    plt.xlabel('Number of K')
+    plt.show()
 
 
 def plot_crossVal_err(err_array, if_log_c_axis = True, filename = 'cross_val_err_vs_c.png'):
@@ -89,16 +92,17 @@ def plot_crossVal_err(err_array, if_log_c_axis = True, filename = 'cross_val_err
     """
     plt.figure()
     if (if_log_c_axis):
-        plt.plot(np.log10(err_array[:,0]),err_array[:,1],"-r", label="training")    
-        plt.plot(np.log10(err_array[:,0]),err_array[:,2],"-b", label="validation")
+        plt.plot(np.log10(err_array[:,0]), err_array[:,1], "-r", label="training")
+        plt.plot(np.log10(err_array[:,0]), err_array[:,2], "-b", label="validation")
         plt.xlabel('$\log_{10}(C)$')
     else:
-        plt.plot(err_array[:,0],err_array[:,1],"-r", label="training")    
-        plt.plot(err_array[:,0],err_array[:,2],"-b", label="validation")
+        plt.plot(err_array[:,0], err_array[:,1], "-r", label="training")    
+        plt.plot(err_array[:,0], err_array[:,2], "-b", label="validation")
         plt.xlabel('C')
     plt.ylabel('error')
     plt.legend()
     plt.savefig(filename, dpi=300)
     plt.show()
+    plt.close
     
     
