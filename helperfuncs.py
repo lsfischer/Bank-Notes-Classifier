@@ -44,9 +44,9 @@ def read_data_file(filename, delim):
 
 
 
-def calculate_error_logistic(feats, X, Y, train_ix, valid_ix, C=1e12):
+def calculate_error(feats, X, Y, train_ix, valid_ix, value, algorithm):
     """return the cross validation error using Logistic regression"""
-    reg = LogisticRegression(C = C, tol = 1e-10)
+    reg = LogisticRegression(C = value, tol=1e-10) if(algorithm == "logistic") else KNeighborsClassifier(n_neighbors = value)
     reg.fit(X[train_ix, :feats], Y[train_ix])
     prob = reg.predict_proba(X[:, :feats])[:, 1]    
     squares = (prob-Y) ** 2
@@ -54,51 +54,41 @@ def calculate_error_logistic(feats, X, Y, train_ix, valid_ix, C=1e12):
 
 
 
-def calculate_test_error_logistic(feats, X_train, Y_train, X_test, Y_test, C=1e12):
+def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, value, algorithm):
     """
         return the test error, training with the full training set, using Logistic regression
     """
-    reg = LogisticRegression(C = C, tol=1e-10)
+    reg = LogisticRegression(C = value, tol=1e-10) if(algorithm == "logistic") else KNeighborsClassifier(n_neighbors = value)
     reg.fit(X_train[:, :feats], Y_train[:])
     prob = reg.predict_proba(X_test[:, :feats])[:,1]
     squares = (prob - Y_test)**2
     return np.mean(squares)
 
 
-def calculate_error_knn(feats, X, Y, train_ix, valid_ix, k):
-    """Return the cross validation error using KNN"""
-    knn = KNeighborsClassifier(n_neighbors = k)
-    knn.fit(X[train_ix, :feats], Y[train_ix])
-    prob = knn.predict_proba(X[:, :feats])[:, 1]
-    squares = (prob - Y) ** 2
-    return np.mean(squares[train_ix]), np.mean(squares[valid_ix])
 
-def plot_crossVal_err_knn(err_array):   #Put this function inside plot_crossVal_err to have just one
-    plt.figure()
-    plt.plot(err_array[:,0], err_array[:,1], "-r", label="training")
-    plt.plot(err_array[:,0], err_array[:,2], "-b", label="validation")
-    plt.ylabel('error')
-    plt.xlabel('Number of K')
-    plt.show()
-
-
-def plot_crossVal_err(err_array, if_log_c_axis = True, filename = 'cross_val_err_vs_c.png'):
+def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cross_val_err_vs_c.png'):
     """ 
         Plots training and cross-validation errors vs C parameter
         if if_log_c_axis = true, C axis is displayed in log scale
-        err_array[:,0] -> C values
+        err_array[:,0] -> C/K values
         err_array[:,1] -> training errors
         err_array[:,2] -> validation errors
     """
     plt.figure()
-    if (if_log_c_axis):
-        plt.plot(np.log10(err_array[:,0]), err_array[:,1], "-r", label="training")
-        plt.plot(np.log10(err_array[:,0]), err_array[:,2], "-b", label="validation")
-        plt.xlabel('$\log_{10}(C)$')
+    if(algorithm == "logistic"):
+        if (if_log_c_axis):
+            plt.plot(np.log10(err_array[:,0]), err_array[:,1], "-r", label="training")
+            plt.plot(np.log10(err_array[:,0]), err_array[:,2], "-b", label="validation")
+            plt.xlabel('$\log_{10}(C)$')
+        else:
+            plt.plot(err_array[:,0], err_array[:,1], "-r", label="training")    
+            plt.plot(err_array[:,0], err_array[:,2], "-b", label="validation")
+            plt.xlabel('C')
     else:
-        plt.plot(err_array[:,0], err_array[:,1], "-r", label="training")    
-        plt.plot(err_array[:,0], err_array[:,2], "-b", label="validation")
-        plt.xlabel('C')
+        plt.plot(err_array[:,0], err_array[:, 1], "-r", label="training")
+        plt.plot(err_array[:,0], err_array[:, 2], "-b", label="validation")
+        plt.xlabel('k')
+        
     plt.ylabel('error')
     plt.legend()
     plt.savefig(filename, dpi=300)
