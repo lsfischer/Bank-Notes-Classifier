@@ -76,7 +76,7 @@ class Assignment:
     
     
     
-    ##TODO check information about lazy learning; Add documentation
+    ##TODO Add documentation
     def knn(self, folds = 5):   ##Put the process of spliting the data and processing it inside a function to reduce redundant code
         self.process_data()
         x_train, x_test, y_train, y_test = train_test_split(self.data, self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
@@ -85,7 +85,7 @@ class Assignment:
         k_cross_error_list = []  #To be converted into a matrix to be plotted with the c value, the training error and the validation error
         
         for k in range(1, 40, 2): #gives us all odd values from 1 to 39
-            total_train_error = total_val_error = 0
+            total_train_error = total_val_error =  0
             for train_idx, valid_idx in kfold.split(y_train, y_train):
                 train_error, valid_error = calculate_error(4, x_train, y_train, train_idx, valid_idx, k, "knn") #Calculate the cross-validation error with the current c
                 total_train_error += train_error
@@ -109,7 +109,7 @@ class Assignment:
         
     
     ##TODO MAYBE PUT CROSS_VALIDATION CODE HERE ???
-    def cross_validation(range_to_use, algorithm):
+    def cross_validation(self, range_to_use, algorithm):
         
         ##TODO FINISH THIS, GENERALIZE THE CROSS VALIDATION
         kfold = StratifiedKFold(n_splits = folds)
@@ -122,9 +122,6 @@ class Assignment:
                 total_train_error += train_error
                 total_val_error += valid_error
                 
-        
-        
-        
         
     def bayes(self):
         pass
