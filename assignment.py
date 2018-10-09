@@ -42,18 +42,23 @@ class Assignment:
             Implement the training of the logistic regression algorithm (to obtain the best C value) 
             and estimation of the test error after training the algorithm with the full training set
         """
-        return self.cross_validation(folds, range(1, 21), "cross_val_err_vs_c.png", "logistic")
+        return self.train_estimate(folds, range(1, 21), "cross_val_err_vs_c.png", "logistic")
         
     
-    
-    ##TODO Add documentation
-    def knn(self, folds = 5):   ##Put the process of spliting the data and processing it inside a function to reduce redundant code
-        return self.cross_validation(folds, range(1, 40, 2), "cross_val_err_vs_k.png", "knn")
+    def knn(self, folds = 5):
+        """
+            Implement the training of the KNN algorithm (to obtain the best K value)
+            and estimation of the test error after training the algorithm with the full training set
+        """
+        return self.train_estimate(folds, range(1, 40, 2), "cross_val_err_vs_k.png", "knn")
         
 
-
-        
-    def cross_validation(self, folds, range_to_use, filename, algorithm):
+    def train_estimate(self, folds, range_to_use, filename, algorithm):
+        """
+            Trains the algorithm specified by the "algorithm" paramater. Processes the data, splits it into train and test set,
+            performs cross validation to obtain the best value (C value or K value depending on the algorithm) and returns the best value
+            and an estimation of the test error
+        """
         self.process_data()
         x_train, x_test, y_train, y_test = train_test_split(self.data, self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
 

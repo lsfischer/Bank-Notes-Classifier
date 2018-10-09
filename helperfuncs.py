@@ -45,15 +45,13 @@ def read_data_file(filename, delim):
 
 
 def calculate_error(feats, X, Y, train_ix, valid_ix, value, algorithm):
-    """return the cross validation error using Logistic regression"""
+    """
+        return the cross validation error using Logistic regression
+    """
     reg = LogisticRegression(C = value, tol=1e-10) if(algorithm == "logistic") else KNeighborsClassifier(n_neighbors = value)
     reg.fit(X[train_ix, :feats], Y[train_ix])
-    # prob = reg.predict_proba(X[:, :feats])[:, 1]    
-    # squares = (prob-Y) ** 2
-    # return np.mean(squares[train_ix]), np.mean(squares[valid_ix])
     accuracy_training = reg.score(X[train_ix, :feats], Y[train_ix])
     accuracy_validation = reg.score(X[valid_ix, :feats], Y[valid_ix])
-
     return 1 - accuracy_training, 1 - accuracy_validation
 
 
@@ -64,7 +62,7 @@ def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, value, algorit
     """
     reg = LogisticRegression(C = value, tol=1e-10) if(algorithm == "logistic") else KNeighborsClassifier(n_neighbors = value)
     reg.fit(X_train[:, :feats], Y_train[:])
-    return 1 - reg.score(X_train[:, :feats], Y_train[:])
+    return 1 - reg.score(X_test[:, :feats], Y_test[:])
 
 
 
