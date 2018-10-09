@@ -9,7 +9,7 @@ Created on Wed Oct  3 09:47:38 2018
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier, KernelDensity
 
 
 def standardize_data(data, column):
@@ -38,16 +38,13 @@ def read_data_file(filename, delim):
     """ 
         Reads the data file and gets data separated by delimiter delim 
     """
-    # Load the data from file
-    data = np.loadtxt(filename,delimiter=delim)
+    data = np.loadtxt(filename,delimiter=delim) # Load the data from file
     return data
 
 
 
 def calculate_error(feats, X, Y, train_ix, valid_ix, value, algorithm):
-    """
-        return the cross validation error using Logistic regression
-    """
+    """return the cross validation error using Logistic regression"""
     reg = LogisticRegression(C = value, tol=1e-10) if(algorithm == "logistic") else KNeighborsClassifier(n_neighbors = value)
     reg.fit(X[train_ix, :feats], Y[train_ix])
     accuracy_training = reg.score(X[train_ix, :feats], Y[train_ix])
@@ -94,5 +91,27 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
     plt.savefig(filename, dpi=300)
     plt.show()
     plt.close
+
+
+
+def calculate_prior(x, y, bw):
+    class_1 = x[ y[:] == 1, :] #obtain every row that has the last column = 1
+    class_0 = x[ y[:] == 0, :] #obtain every row that has the last column = 0
+
+    prior_1 = np.log(len(class_1) / len(x))
+    prior_0 = np.log(len(class_0) / len(x))
+    
+    #Aqui temos que percorrer as features que estão no X
+    #Criamos um KDE para cada uma das features para cada uma das classes
+    #ou seja vamos ter 4 kde's para para a classe 0 e 4 kde's para a classe 1
+    #temos que ser mesmo coluna ou seja, temos que fazer tipo x[:, [1]] em vez de x[:, 1]
+    #temos estes kdes todos numa lista de kds
+    #nesta função retornamos esta lista de kdes, o prior score da classe 1 e da classe 0
+    #noutra função fazemos aqui que o stor escreveu no quadro
+    kde = KernelDensity(kernel = "gaussian", bandwidth = bw)
+    kde.fit(x)
+    kde.score(x)    #será que aqui é o x com os indices de validation ?
+
+
     
     

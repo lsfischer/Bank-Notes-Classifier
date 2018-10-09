@@ -51,7 +51,27 @@ class Assignment:
             and estimation of the test error after training the algorithm with the full training set
         """
         return self.train_estimate(folds, range(1, 40, 2), "cross_val_err_vs_k.png", "knn")
-        
+
+
+
+    def bayes(self, folds = 5):
+        """
+            Implement the training of the Naive bayes algorithm (to obtain the best kernel density value) 
+            and estimation of the test error after training the algorithm with the full training set
+        """
+        self.process_data()
+        x_train, x_test, y_train, y_test = train_test_split(self.data, self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
+        cross_error_list = []
+
+        kfold = StratifiedKFold(n_splits = folds)
+
+        for bw in np.arange(0.01, 1.0, 0.02):
+            total_train_error = total_val_error = 0
+
+            for train_idx, valid_idx in kfold.split(y_train, y_train):
+                calculate_prior(x_train[train_idx], y_train[train_idx], bw)
+
+                
 
     def train_estimate(self, folds, range_to_use, filename, algorithm):
         """
@@ -90,8 +110,4 @@ class Assignment:
 
         test_error = calculate_test_error(4, x_train, y_train, x_test, y_test, int(best_val), algorithm)
         return best_val, test_error
-
-
         
-    def bayes(self):
-        pass
