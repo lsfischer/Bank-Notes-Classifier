@@ -81,7 +81,7 @@ class Assignment:
                 total_train_error += train_error
                 total_val_error += valid_error
 
-            cross_error_list.append(bw, total_train_error, total_val_error)
+            cross_error_list.append((bw, total_train_error, total_val_error))
 
         cross_error_matrix = np.array(cross_error_list)
 
