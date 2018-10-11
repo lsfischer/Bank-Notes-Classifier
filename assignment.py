@@ -78,6 +78,18 @@ class Assignment:
                 prior_kde_list = get_prior_and_kdes(x_training_set, y_training_set, bw)
                 train_error, valid_error = calculate_error_bayes(x_training_set, y_training_set, x_validation_set, y_validation_set, prior_kde_list)
 
+                total_train_error += train_error
+                total_val_error += valid_error
+
+            cross_error_list.append(bw, total_train_error, total_val_error)
+
+        cross_error_matrix = np.array(cross_error_list)
+
+        # Plot cross validation and training errors
+
+        # Select best bandwidth
+
+
                 
 
     def train_estimate(self, folds, range_to_use, filename, algorithm):
