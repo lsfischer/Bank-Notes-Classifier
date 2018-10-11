@@ -186,7 +186,7 @@ def calculate_error_bayes(x_training, y_training, x_validation, y_validation, pr
 
     return ((1 - accuracy_score(y_training, prediction_list_train), 1 - accuracy_score(y_validation, prediction_list_valid)))
 
-    def calculate_test_error_bayes(x_test, y_test, x_full_train, y_full_train, best_bw):
+def calculate_test_error_bayes(x_test, y_test, x_full_train, y_full_train, best_bw):
     """
         Calculates the test error of the Naive Bayes classifier
 
