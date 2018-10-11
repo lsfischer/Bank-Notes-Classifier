@@ -147,13 +147,14 @@ def calculate_error_bayes(x_training, y_training, x_validation, y_validation, pr
             feat_num = 0
             sum_feat_class0 = 0
             sum_feat_class1 = 0
-            for feat in line:
+            for feat in line[:-1]:
                 kde_to_use_class0 = kde_list[feat_num][0] #We get the kde for feat_num and class 0 
                 kde_to_use_class1 = kde_list[feat_num][1] #We get the kde for feat_num and class 1
 
                 sum_feat_class0 +=  kde_to_use_class0.score(feat)
                 sum_feat_class1 += kde_to_use_class1.score(feat)
 
+                feat_num +=1
 
             pred_class0 = prior_class0 + sum_feat_class0
             pred_class1 = prior_class1 + sum_feat_class1
