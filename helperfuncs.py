@@ -139,31 +139,46 @@ def calculate_error_bayes(x_training, y_training, x_validation, y_validation, pr
     prior_class0 = prior_kde_list[0]
     prior_class1 = prior_kde_list[1]
     kde_list = prior_kde_list[2]
-
-    def get_error(values_to_use, labels_to_use):
-        prediction_list = []
-        
-        for line in values_to_use:
-            feat_num = 0
-            sum_feat_class0 = 0
-            sum_feat_class1 = 0
-            for feat in line[:-1]:
-                kde_to_use_class0 = kde_list[feat_num][0] #We get the kde for feat_num and class 0 
-                kde_to_use_class1 = kde_list[feat_num][1] #We get the kde for feat_num and class 1
-
-                sum_feat_class0 +=  kde_to_use_class0.score(feat)
-                sum_feat_class1 += kde_to_use_class1.score(feat)
-
-                feat_num +=1
-
-            pred_class0 = prior_class0 + sum_feat_class0
-            pred_class1 = prior_class1 + sum_feat_class1
-
-            class_predicted = 0
-            if(pred_class1 >= pred_class0):
-                class_predicted = 1
-            prediction_list.append(class_predicted)
-            
-        return (1 - accuracy_score(labels_to_use, prediction_list))
     
-    return(get_error(x_training, y_training), get_error(x_validation, y_validation))
+    logs_list_class1_train = []
+    logs_list_class0_train = []
+
+    logs_list_class1_valid = []
+    logs_list_class0_valid = []
+    
+    
+    for feat in range(0,4):
+        feature_column_train = x_training[:, [feat]]
+        feature_column_valid = x_validation[:, [feat]]
+
+        kde_to_use_class0 = kde_list[feat][0] #We get the kde for feat and class 0 
+        kde_to_use_class1 = kde_list[feat][1] #We get the kde for feat and class 1
+        scores_class1_train = kde_to_use_class1.score_samples(feature_column_train)
+        scores_class0_train = kde_to_use_class0.score_samples(feature_column_train)
+
+        scores_class1_valid = kde_to_use_class1.score_samples(feature_column_valid)
+        scores_class0_valid = kde_to_use_class0.score_samples(feature_column_valid)
+
+        logs_list_class1_train.append(scores_class1_train)
+        logs_list_class0_train.append(scores_class0_train)
+
+        logs_list_class1_valid.append(scores_class1_valid)
+        logs_list_class0_valid.append(scores_class0_valid)
+
+    logs_matrix_class1_train = np.column_stack((logs_list_class1_train[0], logs_list_class1_train[1], logs_list_class1_train[2], logs_list_class1_train[3]))
+    logs_matrix_class0_train = np.column_stack((logs_list_class0_train[0], logs_list_class0_train[1], logs_list_class0_train[2], logs_list_class0_train[3]))
+
+    logs_matrix_class1_valid = np.column_stack((logs_list_class1_valid[0], logs_list_class1_valid[1], logs_list_class1_valid[2], logs_list_class1_valid[3]))
+    logs_matrix_class0_valid = np.column_stack((logs_list_class0_valid[0], logs_list_class0_valid[1], logs_list_class0_valid[2], logs_list_class0_valid[3]))
+
+    sum_feat_class1_train =  prior_class1+ np.sum(logs_matrix_class1_train, axis = 1)
+    sum_feat_class0_train =  prior_class0 + np.sum(logs_matrix_class0_train, axis = 1)
+
+    sum_feat_class1_valid =  prior_class1+ np.sum(logs_matrix_class1_valid, axis = 1)
+    sum_feat_class0_valid =  prior_class0 + np.sum(logs_matrix_class0_valid, axis = 1)
+
+    
+    prediction_list_train = (sum_feat_class1_train >= sum_feat_class0_train).astype(int)
+    prediction_list_valid = (sum_feat_class1_valid >= sum_feat_class0_valid).astype(int)
+
+    return ((1 - accuracy_score(y_training, prediction_list_train), 1 - accuracy_score(y_validation, prediction_list_valid)))

@@ -60,7 +60,7 @@ class Assignment:
             and estimation of the test error after training the algorithm with the full training set
         """
         self.process_data()
-        x_train, x_test, y_train, y_test = train_test_split(self.data, self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
+        x_train, x_test, y_train, y_test = train_test_split(self.data[:, :-1], self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
         cross_error_list = []
 
         kfold = StratifiedKFold(n_splits = folds)
@@ -77,7 +77,7 @@ class Assignment:
 
                 prior_kde_list = get_prior_and_kdes(x_training_set, y_training_set, bw)
                 train_error, valid_error = calculate_error_bayes(x_training_set, y_training_set, x_validation_set, y_validation_set, prior_kde_list)
-
+                print(train_error, valid_error)
                 total_train_error += train_error
                 total_val_error += valid_error
 
@@ -99,7 +99,7 @@ class Assignment:
             and an estimation of the test error
         """
         self.process_data()
-        x_train, x_test, y_train, y_test = train_test_split(self.data, self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
+        x_train, x_test, y_train, y_test = train_test_split(self.data[:, :-1], self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
 
         kfold = StratifiedKFold(n_splits = folds)
         cross_error_list = []  #To be converted into a matrix to be plotted with the c value, the training error and the validation error
