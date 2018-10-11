@@ -84,7 +84,10 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
     else:
         plt.plot(err_array[:,0], err_array[:, 1], "-r", label="training")
         plt.plot(err_array[:,0], err_array[:, 2], "-b", label="validation")
-        plt.xlabel('k')
+        if(algorithm == "knn"):
+            plt.xlabel('k')
+        else:
+            plt.xlabel('bw')
         
     plt.ylabel('error')
     plt.legend()
