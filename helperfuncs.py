@@ -182,3 +182,48 @@ def calculate_error_bayes(x_training, y_training, x_validation, y_validation, pr
     prediction_list_valid = (sum_feat_class1_valid >= sum_feat_class0_valid).astype(int)
 
     return ((1 - accuracy_score(y_training, prediction_list_train), 1 - accuracy_score(y_validation, prediction_list_valid)))
+
+    def calculate_test_error_bayes(x_test, y_test, x_full_train, y_full_train, best_bw):
+    """
+        Calculates the test error of the Naive Bayes classifier
+
+        Parameters:
+            x_test : Values of the test set
+            y_test : Labels of the test set
+            x_full_train : Values of the full set to use for training
+            y_full_train : Labels of the full set to use for training
+
+        Returns:
+            The test error for the model training with the full set and the best bw found before
+    """
+
+    prior_kde_list = get_prior_and_kdes(x_full_train, y_full_train, best_bw)
+
+    prior_class0 = prior_kde_list[0]
+    prior_class1 = prior_kde_list[1]
+    kde_list = prior_kde_list[2]
+    
+    logs_list_class1_test = []
+    logs_list_class0_test = []   
+    
+    for feat in range(0,4):
+        feature_column_test = x_test[:, [feat]]
+
+        kde_to_use_class0 = kde_list[feat][0] #We get the kde for feat and class 0 
+        kde_to_use_class1 = kde_list[feat][1] #We get the kde for feat and class 1
+        scores_class1_test = kde_to_use_class1.score_samples(feature_column_test)
+        scores_class0_test = kde_to_use_class0.score_samples(feature_column_test)
+
+        logs_list_class1_test.append(scores_class1_test)
+        logs_list_class0_test.append(scores_class0_test)
+
+
+    logs_matrix_class1_test = np.column_stack((logs_list_class1_test[0], logs_list_class1_test[1], logs_list_class1_test[2], logs_list_class1_test[3]))
+    logs_matrix_class0_test = np.column_stack((logs_list_class0_test[0], logs_list_class0_test[1], logs_list_class0_test[2], logs_list_class0_test[3]))
+
+    sum_feat_class1_test =  prior_class1+ np.sum(logs_matrix_class1_test, axis = 1)
+    sum_feat_class0_test =  prior_class0 + np.sum(logs_matrix_class0_test, axis = 1)
+    
+    prediction_list_test = (sum_feat_class1_test >= sum_feat_class0_test).astype(int)
+
+    return (1 - accuracy_score(y_test, prediction_list_test))

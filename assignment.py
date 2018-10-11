@@ -85,10 +85,7 @@ class Assignment:
 
         cross_error_matrix = np.array(cross_error_list)
 
-        # Plot cross validation and training errors
-
-        # Select best bandwidth
-
+        test_error = calculate_test_error_bayes(x_test, y_test, x_train, y_train, best_bw)
 
                 
 
