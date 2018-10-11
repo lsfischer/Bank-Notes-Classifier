@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier, KernelDensity
-
+from sklearn.metrics import accuracy_score
 
 def standardize_data(data, column):
     """
@@ -98,40 +98,71 @@ def get_prior_and_kdes(x, y, bw):
     class_1 = x[ y[:] == 1, :] #obtain every row that has the last column = 1
     class_0 = x[ y[:] == 0, :] #obtain every row that has the last column = 0
 
-    prior_1 = np.log(len(class_1) / len(x))
-    prior_0 = np.log(len(class_0) / len(x))
+    prior_1 = np.log(len(class_1) / len(x)) #Obtain the prior probability of class 1
+    prior_0 = np.log(len(class_0) / len(x)) #Obtain the prior probability of class 0
 
 
-    feat_kde_score = []   #List that will contain all the different KDE, one for each feature, for all classes
-
+    kde_list = []   #List that will contain all the different KDE, one for each feature, for all classes
 
     #Iterate through the features
+
     for feat in range (0, 4):
         feature_class1 = class_1[:,  [feat]]    #Get a specific feature of the set of class 1
         feature_class0 = class_0[:, [feat]] #Get a specific feature of the set of class 0
 
         kde_class1 = KernelDensity(kernel = "gaussian", bandwidth = bw)
-        kde_class1.fit(feature_class1)
-        score_class1 = kde_class1.score(feature_class1)    #is it score, or score_samples
+        kde_class1.fit(feature_class1)  #Fit the kde of class 1 for feature "feat"
 
         kde_class0 = KernelDensity(kernel = "gaussian", bandwidth = bw)
-        kde_class0.fit(feature_class0)
-        score_class0 = kde_class0.score(feature_class0)
+        kde_class0.fit(feature_class0) #Fit the kde of class 0 for feature "feat"
+        
 
-        feat_kde_score.append((feat,kde_class1, score_class1))
-        feat_kde_score.append((feat, kde_class0, score_class0))
+        kde_list.append((kde_class0, kde_class1))   #In kde_list we store the KDE for feature "feat" for class 0 and for class 1
 
-    print(1 - score_class1)
-    #print(feat_kde_score)
+    return (prior_0, prior_1, kde_list)
+
+
+def calculate_error_bayes(x_training, y_training, x_validation, y_validation, prior_kde_list):
+    """
+        Calculates the training and validation error of the Naive Bayes classifier
+
+        Parameters:
+            x_training : Values of the training set
+            y_training : Labels of the training set
+            x_validation : Values of the validation set
+            y_validation : Labels of the validation set
+            prior_kde_list: List containing the prior probability of class 0 and 1, aswell as a list with KDE's for all features (for both classes)
+
+        Returns:
+            The training and validation error
+    """
+    prior_class0 = prior_kde_list[0]
+    prior_class1 = prior_kde_list[1]
+    kde_list = prior_kde_list[2]
+
+    def get_error(values_to_use, labels_to_use):
+        prediction_list = []
+        
+        for line in values_to_use:
+            feat_num = 0
+            sum_feat_class0 = 0
+            sum_feat_class1 = 0
+            for feat in line:
+                kde_to_use_class0 = kde_list[feat_num][0] #We get the kde for feat_num and class 0 
+                kde_to_use_class1 = kde_list[feat_num][1] #We get the kde for feat_num and class 1
+
+                sum_feat_class0 +=  kde_to_use_class0.score(feat)
+                sum_feat_class1 += kde_to_use_class1.score(feat)
+
+
+            pred_class0 = prior_class0 + sum_feat_class0
+            pred_class1 = prior_class1 + sum_feat_class1
+
+            class_predicted = 0
+            if(pred_class1 >= pred_class0):
+                class_predicted = 1
+            prediction_list.append(class_predicted)
+            
+        return (1 - accuracy_score(labels_to_use, prediction_list))
     
-    #Aqui temos que percorrer as features que estão no X
-    #Criamos um KDE para cada uma das features para cada uma das classes
-    #ou seja vamos ter 4 kde's para para a classe 0 e 4 kde's para a classe 1
-    #temos que ser mesmo coluna ou seja, temos que fazer tipo x[:, [1]] em vez de x[:, 1]
-    #temos estes kdes todos numa lista de kds
-    #nesta função retornamos esta lista de kdes, o prior score da classe 1 e da classe 0
-    #noutra função fazemos aqui que o stor escreveu no quadro
-
-    # kde = KernelDensity(kernel = "gaussian", bandwidth = bw)
-    # kde.fit(x)
-    # kde.score(x)
+    return(get_error(x_training, y_training), get_error(x_validation, y_validation))

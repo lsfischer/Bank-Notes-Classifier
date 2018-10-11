@@ -69,8 +69,14 @@ class Assignment:
             total_train_error = total_val_error = 0
 
             for train_idx, valid_idx in kfold.split(y_train, y_train):
-                get_prior_and_kdes(x_train[train_idx], y_train[train_idx], bw)
+                x_training_set = x_train[train_idx]
+                x_validation_set = x_train[valid_idx]
 
+                y_training_set = y_train[train_idx]
+                y_validation_set = y_train[valid_idx]
+
+                prior_kde_list = get_prior_and_kdes(x_training_set, y_training_set, bw)
+                train_error, valid_error = calculate_error_bayes(x_training_set, y_training_set, x_validation_set, y_validation_set, prior_kde_list)
 
                 
 
