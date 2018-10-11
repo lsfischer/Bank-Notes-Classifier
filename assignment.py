@@ -77,7 +77,6 @@ class Assignment:
 
                 prior_kde_list = get_prior_and_kdes(x_training_set, y_training_set, bw)
                 train_error, valid_error = calculate_error_bayes(x_training_set, y_training_set, x_validation_set, y_validation_set, prior_kde_list)
-                print(train_error, valid_error)
                 total_train_error += train_error
                 total_val_error += valid_error
 
@@ -85,6 +84,12 @@ class Assignment:
 
         cross_error_matrix = np.array(cross_error_list)
 
+        plot_crossVal_err(cross_error_matrix, "bayes", filename = "cross_val_err_vs_bw.png") # Plot training and validation errors
+
+        index_line_of_best_bw = np.argmin(cross_error_matrix[:, 2])
+        best_bw = cross_error_matrix[index_line_of_best_bw, 0]
+
+        return best_bw
         # Plot cross validation and training errors
 
         # Select best bandwidth
