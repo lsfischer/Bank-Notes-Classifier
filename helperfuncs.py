@@ -94,12 +94,35 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
 
 
 
-def calculate_prior(x, y, bw):
+def get_prior_and_kdes(x, y, bw):
     class_1 = x[ y[:] == 1, :] #obtain every row that has the last column = 1
     class_0 = x[ y[:] == 0, :] #obtain every row that has the last column = 0
 
     prior_1 = np.log(len(class_1) / len(x))
     prior_0 = np.log(len(class_0) / len(x))
+
+
+    feat_kde_score = []   #List that will contain all the different KDE, one for each feature, for all classes
+
+
+    #Iterate through the features
+    for feat in range (0, 4):
+        feature_class1 = class_1[:,  [feat]]    #Get a specific feature of the set of class 1
+        feature_class0 = class_0[:, [feat]] #Get a specific feature of the set of class 0
+
+        kde_class1 = KernelDensity(kernel = "gaussian", bandwidth = bw)
+        kde_class1.fit(feature_class1)
+        score_class1 = kde_class1.score(feature_class1)    #is it score, or score_samples
+
+        kde_class0 = KernelDensity(kernel = "gaussian", bandwidth = bw)
+        kde_class0.fit(feature_class0)
+        score_class0 = kde_class0.score(feature_class0)
+
+        feat_kde_score.append((feat,kde_class1, score_class1))
+        feat_kde_score.append((feat, kde_class0, score_class0))
+
+    print(1 - score_class1)
+    #print(feat_kde_score)
     
     #Aqui temos que percorrer as features que estão no X
     #Criamos um KDE para cada uma das features para cada uma das classes
@@ -108,10 +131,7 @@ def calculate_prior(x, y, bw):
     #temos estes kdes todos numa lista de kds
     #nesta função retornamos esta lista de kdes, o prior score da classe 1 e da classe 0
     #noutra função fazemos aqui que o stor escreveu no quadro
-    kde = KernelDensity(kernel = "gaussian", bandwidth = bw)
-    kde.fit(x)
-    kde.score(x)    #será que aqui é o x com os indices de validation ?
 
-
-    
-    
+    # kde = KernelDensity(kernel = "gaussian", bandwidth = bw)
+    # kde.fit(x)
+    # kde.score(x)

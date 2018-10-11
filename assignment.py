@@ -69,7 +69,8 @@ class Assignment:
             total_train_error = total_val_error = 0
 
             for train_idx, valid_idx in kfold.split(y_train, y_train):
-                calculate_prior(x_train[train_idx], y_train[train_idx], bw)
+                get_prior_and_kdes(x_train[train_idx], y_train[train_idx], bw)
+
 
                 
 
