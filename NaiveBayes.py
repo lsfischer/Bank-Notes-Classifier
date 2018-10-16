@@ -126,8 +126,8 @@ class NaiveBayes:
 
         logs_matrix_class1_test = np.column_stack((logs_list_class1_test[0], logs_list_class1_test[1], logs_list_class1_test[2], logs_list_class1_test[3]))
         logs_matrix_class0_test = np.column_stack((logs_list_class0_test[0], logs_list_class0_test[1], logs_list_class0_test[2], logs_list_class0_test[3]))
-
-        sum_feat_class1_test =  prior_class1+ np.sum(logs_matrix_class1_test, axis = 1)
+        
+        sum_feat_class1_test =  prior_class1 + np.sum(logs_matrix_class1_test, axis = 1)
         sum_feat_class0_test =  prior_class0 + np.sum(logs_matrix_class0_test, axis = 1)
         
         prediction_list_test = (sum_feat_class1_test >= sum_feat_class0_test).astype(int)

@@ -70,7 +70,11 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
         err_array[:,1] -> training errors
         err_array[:,2] -> validation errors
     """
-    plt.figure()
+    plt.figure(figsize = (11, 8))
+    font = {
+    'weight' : 'regular',
+    'size'   : 24}
+    plt.rc('font', **font)
     if(algorithm == "logistic"):
         if (if_log_c_axis):
             plt.plot(np.log10(err_array[:,0]), err_array[:,1], "-r", label="training")
@@ -90,7 +94,9 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
         
     plt.ylabel('error')
     plt.legend()
+    
     plt.savefig(filename, dpi=300)
+    plt.savefig(filename[0:-3]+"eps", dpi=300)
     plt.show()
     plt.close
 

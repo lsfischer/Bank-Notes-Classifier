@@ -9,4 +9,5 @@ Created on Mon Oct  1 15:51:38 2018
 from assignment import Assignment   #Import Assignment class from assignment.py
 
 assignment = Assignment("TP1-data.csv", ",")
-assignment.mcNemar_test("nb", "logistic")
+assignment.logistic_reg()
+#assignment.mcNemar_test("nb", "logistic")

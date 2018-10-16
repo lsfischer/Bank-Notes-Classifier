@@ -196,3 +196,16 @@ class Assignment:
 
         else:
             print("Classifier {} and {} are not significantly different".format(classifier1, classifier2)) #They're not significantly different
+
+
+
+    def mcNemar_test_all_classifiers(self):
+        self.process_data()
+
+        x_train, x_test, y_train, y_test = train_test_split(self.data[:, :-1], self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
+
+        predictions1, test_error1 = self.knn(x_train = x_train, x_test = x_test, y_train = y_train, y_test = y_test)
+
+        predictions2, test_error2 = self.bayes(x_train = x_train, x_test = x_test, y_train = y_train, y_test = y_test)
+
+        
