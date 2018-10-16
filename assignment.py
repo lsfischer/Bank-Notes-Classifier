@@ -11,12 +11,20 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split, StratifiedKFold
 
 class Assignment:
+    """
+        Class responsible for the entire process of executing a classifier. (Reading the data, processesing it, splitting into different sets, training and estimating test error)
 
-    def __init__(self, filename, delim):
+        Attributes:
+            filename - Name of the data file to read
+            delim    - Value delimiter of the given file
+    """
+
+    def __init__(self, filename, delim = ","):
         """
             Initializer for the Assignment class.
             Obtains the data from a given file and shuffles that data.
-            Input: 
+
+            Args: 
                 filename - name of the file to obtain the data from
                 delim - delimiter of the values in that file
         """
@@ -30,9 +38,9 @@ class Assignment:
             Processes the data according to the given type of processing requested
         """
         if (proc_type == "standardize"):
-            self.data[:, :-1] = standardize_data(self.data[:,:-1], 0)
+            self.data[:, :-1] = standardize_data(self.data[:, :-1], 0)
         else:
-            self.data[:, :-1] = normalize_data(self.data[:,:-1], 0)
+            self.data[:, :-1] = normalize_data(self.data[:, :-1], 0)
         
         
         
@@ -41,6 +49,17 @@ class Assignment:
         """
             Implement the training of the logistic regression algorithm (to obtain the best C value) 
             and estimation of the test error after training the algorithm with the full training set
+
+            Args:
+                folds           - Number of folds to use (default is 5)
+                x_train         - Training set of the values
+                x_test          - Test set of the values
+                y_train         - Training set of the target-values
+                y_test          - Test set of the target-values
+                is_mcnemar_test - Boolean used to determine wheather or not to plot the graph
+
+            Returns:
+                A list of class predictions Logistic Regression predicted after training, and the test error
         """
         return self.train_estimate(folds, range(1, 21), "cross_val_err_vs_c.png", "logistic", x_train, x_test, y_train, y_test, is_mcnemar_test)
         
@@ -49,6 +68,17 @@ class Assignment:
         """
             Implement the training of the KNN algorithm (to obtain the best K value)
             and estimation of the test error after training the algorithm with the full training set
+
+            Args:
+                folds           - Number of folds to use (default is 5)
+                x_train         - Training set of the values
+                x_test          - Test set of the values
+                y_train         - Training set of the target-values
+                y_test          - Test set of the target-values
+                is_mcnemar_test - Boolean used to determine wheather or not to plot the graph
+
+            Returns:
+                A list of class predictions K-Nearest-Neighbours predicted after training, and the test error
         """
         return self.train_estimate(folds, range(1, 40, 2), "cross_val_err_vs_k.png", "knn", x_train, x_test, y_train, y_test, is_mcnemar_test)
 
@@ -58,7 +88,19 @@ class Assignment:
         """
             Implement the training of the Naive bayes algorithm (to obtain the best kernel density value) 
             and estimation of the test error after training the algorithm with the full training set
+
+            Args:
+                folds           - Number of folds to use (default is 5)
+                x_train         - Training set of the values
+                x_test          - Test set of the values
+                y_train         - Training set of the target-values
+                y_test          - Test set of the target-values
+                is_mcnemar_test - Boolean used to determine wheather or not to plot the graph
+
+            Returns:
+                A list of class predictions Naive Bayes predicted after training, and the test error 
         """
+        #If we provide the method with the training and test sets (from the mcnemar_test method) we don't need to do it again
         if(x_train is None):
             self.process_data()
             x_train, x_test, y_train, y_test = train_test_split(self.data[:, :-1], self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
@@ -112,8 +154,8 @@ class Assignment:
             performs cross validation to obtain the best value (C value or K value depending on the algorithm) and returns the best value
             and an estimation of the test error
 
-            Params:
-                folds           - Number of folds to use
+            Args:
+                folds           - Number of folds to use (default is 5)
                 range_to_use    - range to be used in the for loop
                 filename        - The name of the image file to store the plot
                 algorithm       - The algorithm to run (logistic - Logistic Regression, knn - K Nearest Neighbours)
@@ -127,6 +169,7 @@ class Assignment:
                 A list of class predictions the classifier predicted after training, and the test error for that classifier
         """
 
+        #If we provide the method with the training and test sets (from the mcnemar_test method) we don't need to do it again
         if(x_train is None):
             self.process_data()
             x_train, x_test, y_train, y_test = train_test_split(self.data[:, :-1], self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
@@ -209,7 +252,7 @@ class Assignment:
         """
             Method that actually computes the McNemar equation and outputs to the the standard-output which classifier is better
 
-            Params:
+            Args:
                 predictions1 - List with class predictions of classifier1
                 predictions2 - List with class predictions of classifier2
                 ground_truth - The ground-truth of this data-set
