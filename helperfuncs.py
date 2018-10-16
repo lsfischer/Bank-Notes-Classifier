@@ -55,12 +55,11 @@ def calculate_error(feats, X, Y, train_ix, valid_ix, value, algorithm):
 
 def calculate_test_error(feats, X_train, Y_train, X_test, Y_test, value, algorithm):
     """
-        return the test error, training with the full training set, using Logistic regression
+        return the test error and the class predictions, training with the full training set, using Logistic regression
     """
     reg = LogisticRegression(C = value, tol=1e-10) if(algorithm == "logistic") else KNeighborsClassifier(n_neighbors = value)
     reg.fit(X_train[:, :feats], Y_train[:])
-    return 1 - reg.score(X_test[:, :feats], Y_test[:])
-
+    return (1 - reg.score(X_test[:, :feats], Y_test[:]), reg.predict(X_test[:, :feats]))
 
 
 def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cross_val_err_vs_c.png'):
@@ -133,7 +132,7 @@ def calculate_test_error_bayes(x_test, y_test, x_full_train, y_full_train, best_
             y_full_train : Labels of the full set to use for training
 
         Returns:
-            The test error for the model training with the full set and the best bw found before
+            The test error for the model and the class predictions, training with the full set and the best bw found before
     """
 
     nb = NaiveBayes()

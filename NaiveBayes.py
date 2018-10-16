@@ -132,4 +132,4 @@ class NaiveBayes:
         
         prediction_list_test = (sum_feat_class1_test >= sum_feat_class0_test).astype(int)
 
-        return (1 - accuracy_score(y_test, prediction_list_test))
+        return (1 - accuracy_score(y_test, prediction_list_test), prediction_list_test)
