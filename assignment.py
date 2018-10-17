@@ -28,6 +28,7 @@ class Assignment:
                 filename - name of the file to obtain the data from
                 delim - delimiter of the values in that file
         """
+
         self.filename = filename
         self.data = read_data_file(filename, delim)
         self.data = shuffle(self.data)
@@ -37,6 +38,7 @@ class Assignment:
         """
             Processes the data according to the given type of processing requested
         """
+
         if (proc_type == "standardize"):
             self.data[:, :-1] = standardize_data(self.data[:, :-1], 0)
         else:
@@ -61,6 +63,7 @@ class Assignment:
             Returns:
                 A list of class predictions Logistic Regression predicted after training, and the test error
         """
+
         return self.train_estimate(folds, range(1, 21), "cross_val_err_vs_c.png", "logistic", x_train, x_test, y_train, y_test, is_mcnemar_test)
         
     
@@ -80,6 +83,7 @@ class Assignment:
             Returns:
                 A list of class predictions K-Nearest-Neighbours predicted after training, and the test error
         """
+
         return self.train_estimate(folds, range(1, 40, 2), "cross_val_err_vs_k.png", "knn", x_train, x_test, y_train, y_test, is_mcnemar_test)
 
 
@@ -100,6 +104,7 @@ class Assignment:
             Returns:
                 A list of class predictions Naive Bayes predicted after training, and the test error 
         """
+
         #If we provide the method with the training and test sets (from the mcnemar_test method) we don't need to do it again
         if(x_train is None):
             self.process_data()
@@ -131,9 +136,6 @@ class Assignment:
             cross_error_list.append((bw, total_train_error, total_val_error))
 
         cross_error_matrix = np.array(cross_error_list) #Conver the error list into matrix form
-
-        if(not is_mcnemar_test):
-            plot_crossVal_err(cross_error_matrix, "bayes", filename = "cross_val_err_vs_bw.png") # Plot training and validation errors
         
         #Find the best band-with value
         index_line_of_best_bw = np.argmin(cross_error_matrix[:, 2])
@@ -142,7 +144,12 @@ class Assignment:
         test_error, predictions = calculate_test_error_bayes(x_test, y_test, x_train, y_train, best_bw)
 
         if(not is_mcnemar_test):
-            print("Best bandwidth: {} \nTest error: {}".format(best_bw, test_error))
+            precision, recall = get_metrics(predictions, y_test) #Get the precision and recall
+
+            print("\nTest error\t|\tPrecision\t|\tRecall\t|\tAccuracy\t|\tBest band-width")
+            print("{:.4f}\t\t|\t{:.4f}\t\t|\t{:.4f}\t|\t{:.4f}\t\t|\t{:.4f}\n".format(test_error, precision, recall, (1 - test_error), best_bw))
+
+            plot_crossVal_err(cross_error_matrix, "bayes", filename = "cross_val_err_vs_bw.png") # Plot training and validation errors
         
         return predictions, test_error
 
@@ -196,10 +203,7 @@ class Assignment:
                 val = k #If we're in knn we want the value to be equal to k
         
         cross_error_matrix = np.array(cross_error_list) # Convert error list into matrix form
-
-        if(not is_mcnemar_test):
-            plot_crossVal_err(cross_error_matrix, algorithm, filename = filename) # Plot training and validation errors
-
+            
         #find the best value (C or K)
         index_line_of_best_val = np.argmin(cross_error_matrix[:, 2])
         best_val = cross_error_matrix[index_line_of_best_val, 0]
@@ -211,7 +215,13 @@ class Assignment:
                 value_string = "C"
             else:
                 value_string = "K"
-            print("Best {}: {} \nTest error: {}".format(value_string, best_val, test_error))
+
+            precision, recall = get_metrics(predictions, y_test) #Get the precision and recall
+
+            print("\nTest error\t|\tPrecision\t|\tRecall\t|\tAccuracy\t|\tBest {}".format(value_string))
+            print("{:.4f}\t\t|\t{:.4f}\t\t|\t{:.4f}\t|\t{:.4f}\t\t|\t{:.4f}\n".format(test_error, precision, recall, (1 - test_error), best_val))
+
+            plot_crossVal_err(cross_error_matrix, algorithm, filename = filename) # Plot training and validation errors
         
         return predictions, test_error
 
@@ -222,6 +232,7 @@ class Assignment:
             Method that calculates the McNemar test for all combination of classifiers.
             This method compares KNN vs Logistic Regression, KNN vs Naive Bayes and Naive Bayes vs Logistic Regression
         """
+
         self.process_data()
 
         x_train, x_test, y_train, y_test = train_test_split(self.data[:, :-1], self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
@@ -234,53 +245,13 @@ class Assignment:
         bayes_prediction, bayes_test_error = self.bayes(x_train = x_train, x_test = x_test, y_train = y_train, y_test = y_test, is_mcnemar_test = True)
 
         #KNN vs Logistic Regression
-        self.calculate_mcnemar(np.array(knn_prediction), np.array(logistic_prediction), np.array(y_test), knn_test_error, logistic_test_error, "K-Nearest-Neighbours", "Logistic Regression")
+        calculate_mcnemar(np.array(knn_prediction), np.array(logistic_prediction), np.array(y_test), knn_test_error, logistic_test_error, "K-Nearest-Neighbours", "Logistic Regression")
         print("\n----------------------------------------------------\n")
 
         #KNN vs Naive Bayes
-        self.calculate_mcnemar(np.array(knn_prediction), np.array(bayes_prediction), np.array(y_test), knn_test_error, bayes_test_error, "K-Nearest-Neighbours", "Naive Bayes")
+        calculate_mcnemar(np.array(knn_prediction), np.array(bayes_prediction), np.array(y_test), knn_test_error, bayes_test_error, "K-Nearest-Neighbours", "Naive Bayes")
         print("\n----------------------------------------------------\n")
 
         #Naive Bayes vs Logistic Regression
-        self.calculate_mcnemar(np.array(bayes_prediction), np.array(logistic_prediction), np.array(y_test), bayes_test_error, logistic_test_error, "Naive Bayes", "Logistic Regression")
+        calculate_mcnemar(np.array(bayes_prediction), np.array(logistic_prediction), np.array(y_test), bayes_test_error, logistic_test_error, "Naive Bayes", "Logistic Regression")
         print("\n----------------------------------------------------\n")
-
-
-
-
-    def calculate_mcnemar(self, predictions1, predictions2, ground_truth, test_error1, test_error2, classifier1, classifier2):
-        """
-            Method that actually computes the McNemar equation and outputs to the the standard-output which classifier is better
-
-            Args:
-                predictions1 - List with class predictions of classifier1
-                predictions2 - List with class predictions of classifier2
-                ground_truth - The ground-truth of this data-set
-                test_error1  - The test error of classifier1, used to determine which classifier is better
-                test_error2  - The test error of classifier2, used to determine which classifier is better
-                classifier1  - The name of the first classifier
-                classifier2  - The name of the second classifier
-        """
-        e01 = np.sum(np.logical_and(predictions1 != ground_truth, predictions2 == ground_truth))
-        e10 = np.sum(np.logical_and(predictions2 != ground_truth, predictions1 == ground_truth))
-
-        observed_value = ((abs(e01 - e10) - 1) ** 2 )/(e01 + e10)
-        critical_point = 3.84 #Chi Squared with 95% confidence and 1 degree of freedom
-
-        if(observed_value >= critical_point):
-
-            if(test_error1 < test_error2):
-                #They're significantly different, and classifier1 is better than classifier2
-                print('Classifier "{}" and "{}" are significantly different, and {} is likely better than {}'.format(classifier1, classifier2, classifier1, classifier2)) 
-
-            elif(test_error1 > test_error2):
-                #They're significantly different, and classifier1 is better than classifier2
-                print('Classifier {} and {} are significantly different, and {} is likely better than {}'.format(classifier1, classifier2, classifier2, classifier1)) 
-
-            else:
-                #They're significantly different but we don't know which one is better
-                print("Classifier \"{}\" and \"{}\" are significantly different, but their score is the same".format(classifier1, classifier2)) 
-
-        else:
-            #They're not significantly different
-            print('Classifier "{}" and "{}" are not significantly different'.format(classifier1, classifier2)) 
