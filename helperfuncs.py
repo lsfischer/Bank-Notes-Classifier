@@ -6,6 +6,7 @@ Created on Wed Oct  3 09:47:38 2018
 @author: Lucas Fischer
 @author: Joana Martins
 """
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
@@ -153,9 +154,13 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
         
     plt.ylabel('error')
     plt.legend()
-    
-    plt.savefig(filename, dpi=300)
-    plt.savefig(filename[0:-3]+"eps", dpi=300)
+    image_dir = "./images"
+
+    if(not os.path.exists(image_dir)):
+        os.makedirs(image_dir)
+
+    plt.savefig(image_dir + "/" +filename, dpi=300)
+    plt.savefig(image_dir + "/" + filename[0:-3]+"eps", dpi=300)
     plt.show()
     plt.close
 
