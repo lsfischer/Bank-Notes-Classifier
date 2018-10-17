@@ -6,7 +6,7 @@ Created on Wed Oct  3 11:23:29 2018
 @author: Lucas Fischer
 @author: Joana Martins
 """
-from helperfuncs import *
+from helper_funcs import *
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split, StratifiedKFold
 

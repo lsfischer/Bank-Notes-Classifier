@@ -39,23 +39,23 @@ O código desenvolvido para este projeto foi implementado em Python 3.6 e de mod
 
 ```
 ML_Banknotes/
-    ├── images         ; Diretoria que contem as imagens dos plots
-    ├── tp1.py         ; Ficheiro onde é iniciada a aplicação
-    ├── assignment.py  ; Classe que executa os classificadores
-    ├── helperfuncs.py ; Ficheiro que contem funções auxiliares
-    ├── NaiveBayes.py  ; Classe que implementa o classificador Naive Bayes
-    └── TP1-data.csv   ; Ficheiro CSV com os dados do problema
+    ├── images          ; Diretoria que contem as imagens dos plots
+    ├── tp1.py          ; Ficheiro onde é iniciada a aplicação
+    ├── assignment.py   ; Classe que executa os classificadores
+    ├── helper_funcs.py ; Ficheiro que contem funções auxiliares
+    ├── naive_bayes.py  ; Classe que implementa o classificador Naive Bayes
+    └── TP1-data.csv    ; Ficheiro CSV com os dados do problema
 ```
 
 No nosso código fonte podemos então identificar os seguintes ficheiros:
 
-* **tp1.py** - 
+* **tp1.py** - Este ficheiro é responsável pela inicialização da aplicação. Este ficheiro simplesmente importa a classe ***Assignment.py*** e executa um dos seus métodos.
 
 * **assignment.py** - 
 
-* **helperfuncs.py** - 
+* **helper_funcs.py** - 
 
-* **NaiveBayes.py** - 
+* **naive_bayes.py** - 
 
 
 <br /><br />
