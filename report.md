@@ -51,7 +51,14 @@ No nosso código fonte podemos então identificar os seguintes ficheiros:
 
 * **tp1.py** - Este ficheiro é responsável pela inicialização da aplicação. Este ficheiro simplesmente importa a classe ***Assignment.py*** e executa um dos seus métodos.
 
-* **assignment.py** - 
+* **assignment.py** - Esta classe implementa toda a lógica de execução dos três classificadores (Logistic Regression, K-Nearest-Neighbours e Naive Bayes). É nesta classe que se encontram os passos comuns entre os classificadores como: 
+    + **Ler os dados**, através da inicialização de um objeto desta classe (método `__init__`)
+
+    + **Processa-los**, utilizando a técnica de *shuffling* e *normalização/standardização*, através do método `process_data` da classe **Assignment**.
+
+    + **Treinar os classificadores**, de maneira a obter os melhores parâmetros para cada classificador, através da técnica *cross validation*.
+
+    + **Estimar o erro real**, calculado sobre o *test set* para obter uma estimativa não-enviesada.
 
 * **helper_funcs.py** - 
 
@@ -62,7 +69,7 @@ No nosso código fonte podemos então identificar os seguintes ficheiros:
 
 <h1>3- Descrição dos classificadores</h1>
 
-## **3.1- Optimização dos parametros**
+## 3.1- Optimização dos parametros
 
 <!-- margin-left:40px = 1 tab -->
 
@@ -71,14 +78,14 @@ No nosso código fonte podemos então identificar os seguintes ficheiros:
 </span>
 
 
-## **3.2- Logistic Regression**
+## 3.2- Logistic Regression
 
 <span style="margin-left: 40px">
         Texto dentro do subcapitulo 3.2
 </span>
 
 
-## **3.3- K-Nearest-Neighbours**
+## 3.3- K-Nearest-Neighbours
 
 
 <span style="margin-left: 40px">
@@ -86,7 +93,7 @@ No nosso código fonte podemos então identificar os seguintes ficheiros:
 </span>
 
 
-## **3.4- Naive Bayes**
+## 3.4- Naive Bayes
 
 <span style="margin-left: 40px">
         Texto dentro do subcapitulo 3.4
