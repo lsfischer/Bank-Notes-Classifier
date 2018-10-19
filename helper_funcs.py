@@ -129,6 +129,8 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
             if_log_c_axis - Boolean used to determine wheather to display the C axis in log scale
             filename      - The name of the image file to store the plot
     """
+    ind_best_val = np.argmin(err_array[:, 2])
+    point_best_val = (err_array[ind_best_val,0],err_array[ind_best_val, 2])
 
     plt.figure(figsize = (11, 8))
     font = {
@@ -139,18 +141,24 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
         if (if_log_c_axis):
             plt.plot(np.log10(err_array[:,0]), err_array[:,1], "-r", label="training")
             plt.plot(np.log10(err_array[:,0]), err_array[:,2], "-b", label="validation")
+            plt.axvline(x = np.log10(err_array[ind_best_val,0]), linestyle=":", linewidth=0.5)
+            plt.plot(np.log10(point_best_val[0]), point_best_val[1], "bo")
             plt.xlabel('$\log_{10}(C)$')
         else:
             plt.plot(err_array[:,0], err_array[:,1], "-r", label="training")    
             plt.plot(err_array[:,0], err_array[:,2], "-b", label="validation")
+            plt.axvline(x = np.log10(err_array[ind_best_val,0]), linestyle=":", linewidth=0.5)
+            plt.plot(np.log10(point_best_val[0]), point_best_val[1], "bo")
             plt.xlabel('C')
     else:
         plt.plot(err_array[:,0], err_array[:, 1], "-r", label="training")
         plt.plot(err_array[:,0], err_array[:, 2], "-b", label="validation")
+        plt.axvline(x = np.log10(err_array[ind_best_val,0]), linestyle=":", linewidth=0.5)
+        plt.plot(np.log10(point_best_val[0]), point_best_val[1], "bo")
         if(algorithm == "knn"):
             plt.xlabel('k')
         else:
-            plt.xlabel('band-with')
+            plt.xlabel('bandwith')
         
     plt.ylabel('error')
     plt.legend()
