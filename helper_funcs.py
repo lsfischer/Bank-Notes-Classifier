@@ -142,23 +142,24 @@ def plot_crossVal_err(err_array, algorithm, if_log_c_axis = True, filename = 'cr
             plt.plot(np.log10(err_array[:,0]), err_array[:,1], "-r", label="training")
             plt.plot(np.log10(err_array[:,0]), err_array[:,2], "-b", label="validation")
             plt.axvline(x = np.log10(err_array[ind_best_val,0]), linestyle=":", linewidth=0.5)
-            plt.plot(np.log10(point_best_val[0]), point_best_val[1], "bo")
+            plt.plot(np.log10(point_best_val[0]), point_best_val[1], "bo", label = "best $\log_{10}(C)$ value")
             plt.xlabel('$\log_{10}(C)$')
         else:
             plt.plot(err_array[:,0], err_array[:,1], "-r", label="training")    
             plt.plot(err_array[:,0], err_array[:,2], "-b", label="validation")
-            plt.axvline(x = np.log10(err_array[ind_best_val,0]), linestyle=":", linewidth=0.5)
-            plt.plot(np.log10(point_best_val[0]), point_best_val[1], "bo")
+            plt.axvline(x = err_array[ind_best_val,0], linestyle=":", linewidth=0.5, label = "best c value")
+            plt.plot(point_best_val[0], point_best_val[1], "bo")
             plt.xlabel('C')
     else:
         plt.plot(err_array[:,0], err_array[:, 1], "-r", label="training")
         plt.plot(err_array[:,0], err_array[:, 2], "-b", label="validation")
-        plt.axvline(x = np.log10(err_array[ind_best_val,0]), linestyle=":", linewidth=0.5)
-        plt.plot(np.log10(point_best_val[0]), point_best_val[1], "bo")
+        plt.axvline(x = err_array[ind_best_val,0], linestyle=":", linewidth=0.5)
         if(algorithm == "knn"):
-            plt.xlabel('k')
+            value = "k"
         else:
-            plt.xlabel('bandwith')
+            value = "bandwidth"
+        plt.plot(point_best_val[0], point_best_val[1], "bo", label = "best "+value+" value")
+        plt.xlabel(value)
         
     plt.ylabel('error')
     plt.legend()
