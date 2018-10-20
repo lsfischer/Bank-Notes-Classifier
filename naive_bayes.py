@@ -4,7 +4,7 @@ from sklearn.neighbors import KernelDensity
 
 class NaiveBayes:
     """
-        Class responsible for implementing all the Naive Bayes algorithm logic
+        Class responsible for implementing all the Naive Bayes classifier logic
     """
 
     def __init__(self):

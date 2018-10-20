@@ -254,7 +254,7 @@ def calculate_mcnemar(predictions1, predictions2, ground_truth, test_error1, tes
                 classifier1  - The name of the first classifier
                 classifier2  - The name of the second classifier
         """
-
+        
         e01 = np.sum(np.logical_and(predictions1 != ground_truth, predictions2 == ground_truth))
         e10 = np.sum(np.logical_and(predictions2 != ground_truth, predictions1 == ground_truth))
 
