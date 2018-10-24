@@ -109,8 +109,11 @@ class Assignment:
         if(x_train is None):
             self.process_data()
             x_train, x_test, y_train, y_test = train_test_split(self.data[:, :-1], self.data[:, -1], test_size = 0.33, stratify = self.data[:, -1])
+            print("Calculating class predictions and cross-validation errors for all bandwidth values ... This takes a few seconds\n")
         
         cross_error_list = []
+
+        
 
         kfold = StratifiedKFold(n_splits = folds)
 
